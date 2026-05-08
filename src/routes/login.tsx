@@ -33,6 +33,7 @@ function LoginPage() {
           <div><Label>Password</Label><Input type="password" required value={password} onChange={e => setPassword(e.target.value)} /></div>
           <Button disabled={loading} className="w-full bg-gradient-hero shadow-elegant">{loading ? "Signing in..." : "Sign in"}</Button>
         </form>
+        <p className="text-sm text-center mt-3"><Link to="/forgot-password" className="text-muted-foreground hover:text-primary">Forgot password?</Link></p>
         <p className="text-sm text-center mt-6 text-muted-foreground">Don't have an account? <Link to="/register" className="text-primary font-medium">Create one</Link></p>
       </Card>
     </div>
