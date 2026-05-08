@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/auth";
-import { FlaskConical, LogOut } from "lucide-react";
+import { FlaskConical, LogOut, GraduationCap } from "lucide-react";
 
 export function Navbar() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isTeacher } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -26,6 +26,7 @@ export function Navbar() {
           {user ? (
             <>
               <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/dashboard" })}>Dashboard</Button>
+              {isTeacher && <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/_app/teacher" })}><GraduationCap className="h-4 w-4 mr-1.5" /> Studio</Button>}
               <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/profile" })}>Profile</Button>
               <Button variant="ghost" size="icon" onClick={async () => { await signOut(); navigate({ to: "/" }); }}><LogOut className="h-4 w-4" /></Button>
             </>
