@@ -129,28 +129,34 @@ export type Database = {
       topics: {
         Row: {
           created_at: string
+          created_by: string | null
           description: string | null
           id: string
           notes: string | null
           order_index: number
+          published: boolean
           slug: string
           title: string
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           notes?: string | null
           order_index?: number
+          published?: boolean
           slug: string
           title: string
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           notes?: string | null
           order_index?: number
+          published?: boolean
           slug?: string
           title?: string
         }
