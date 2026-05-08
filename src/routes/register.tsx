@@ -16,7 +16,7 @@ export const Route = createFileRoute("/register")({
 
 function RegisterPage() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ full_name: "", email: "", password: "", gender: "", school_name: "", class_level: "" });
+  const [form, setForm] = useState({ full_name: "", email: "", password: "", gender: "", school_name: "", class_level: "", role: "user" });
   const [loading, setLoading] = useState(false);
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }));
 
@@ -30,14 +30,28 @@ function RegisterPage() {
           e.preventDefault();
           if (form.password.length < 6) return toast.error("Password must be at least 6 characters");
           setLoading(true);
-          const { error } = await supabase.auth.signUp({
+          const { data, error } = await supabase.auth.signUp({
             email: form.email, password: form.password,
             options: { emailRedirectTo: `${window.location.origin}/dashboard`, data: { full_name: form.full_name, gender: form.gender, school_name: form.school_name, class_level: form.class_level } }
           });
+          if (error) { setLoading(false); return toast.error(error.message); }
+          // If signing up as teacher, add the teacher role
+          if (form.role === "teacher" && data.user) {
+            await supabase.from("user_roles").insert({ user_id: data.user.id, role: "teacher" });
+          }
           setLoading(false);
-          if (error) return toast.error(error.message);
-          toast.success("Account created!"); navigate({ to: "/dashboard" });
+          toast.success("Account created!"); navigate({ to: form.role === "teacher" ? "/_app/teacher" : "/dashboard" });
         }}>
+          <div>
+            <Label>I am a</Label>
+            <Select value={form.role} onValueChange={(v) => set("role", v)}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">Student</SelectItem>
+                <SelectItem value="teacher">Teacher</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div><Label>Full name</Label><Input required maxLength={100} value={form.full_name} onChange={e => set("full_name", e.target.value)} /></div>
           <div className="grid md:grid-cols-2 gap-4">
             <div><Label>Email</Label><Input type="email" required maxLength={255} value={form.email} onChange={e => set("email", e.target.value)} /></div>

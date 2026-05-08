@@ -129,28 +129,34 @@ export type Database = {
       topics: {
         Row: {
           created_at: string
+          created_by: string | null
           description: string | null
           id: string
           notes: string | null
           order_index: number
+          published: boolean
           slug: string
           title: string
         }
         Insert: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           notes?: string | null
           order_index?: number
+          published?: boolean
           slug: string
           title: string
         }
         Update: {
           created_at?: string
+          created_by?: string | null
           description?: string | null
           id?: string
           notes?: string | null
           order_index?: number
+          published?: boolean
           slug?: string
           title?: string
         }
@@ -188,7 +194,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "user" | "admin"
+      app_role: "user" | "admin" | "teacher"
       difficulty_level: "beginner" | "intermediate" | "advanced"
     }
     CompositeTypes: {
@@ -317,7 +323,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["user", "admin"],
+      app_role: ["user", "admin", "teacher"],
       difficulty_level: ["beginner", "intermediate", "advanced"],
     },
   },
