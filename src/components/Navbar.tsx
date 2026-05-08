@@ -26,6 +26,7 @@ export function Navbar() {
           {user ? (
             <>
               <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/dashboard" })}>Dashboard</Button>
+              <Button variant="ghost" size="sm" onClick={() => navigate({ to: "/profile" })}>Profile</Button>
               <Button variant="ghost" size="icon" onClick={async () => { await signOut(); navigate({ to: "/" }); }}><LogOut className="h-4 w-4" /></Button>
             </>
           ) : (
