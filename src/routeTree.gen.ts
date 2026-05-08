@@ -22,7 +22,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppDashboardRouteImport } from './routes/_app/dashboard'
 import { Route as AppTopicsIndexRouteImport } from './routes/_app/topics/index'
+import { Route as AppTeacherIndexRouteImport } from './routes/_app/teacher/index'
 import { Route as AppTopicsSlugRouteImport } from './routes/_app/topics/$slug'
+import { Route as AppTeacherTopicsIdRouteImport } from './routes/_app/teacher/topics/$id'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -88,9 +90,19 @@ const AppTopicsIndexRoute = AppTopicsIndexRouteImport.update({
   path: '/topics/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTeacherIndexRoute = AppTeacherIndexRouteImport.update({
+  id: '/teacher/',
+  path: '/teacher/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTopicsSlugRoute = AppTopicsSlugRouteImport.update({
   id: '/topics/$slug',
   path: '/topics/$slug',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTeacherTopicsIdRoute = AppTeacherTopicsIdRouteImport.update({
+  id: '/teacher/topics/$id',
+  path: '/teacher/topics/$id',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -107,7 +119,9 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof AppDashboardRoute
   '/profile': typeof AppProfileRoute
   '/topics/$slug': typeof AppTopicsSlugRoute
+  '/teacher/': typeof AppTeacherIndexRoute
   '/topics/': typeof AppTopicsIndexRoute
+  '/teacher/topics/$id': typeof AppTeacherTopicsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -122,7 +136,9 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AppDashboardRoute
   '/profile': typeof AppProfileRoute
   '/topics/$slug': typeof AppTopicsSlugRoute
+  '/teacher': typeof AppTeacherIndexRoute
   '/topics': typeof AppTopicsIndexRoute
+  '/teacher/topics/$id': typeof AppTeacherTopicsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -139,7 +155,9 @@ export interface FileRoutesById {
   '/_app/dashboard': typeof AppDashboardRoute
   '/_app/profile': typeof AppProfileRoute
   '/_app/topics/$slug': typeof AppTopicsSlugRoute
+  '/_app/teacher/': typeof AppTeacherIndexRoute
   '/_app/topics/': typeof AppTopicsIndexRoute
+  '/_app/teacher/topics/$id': typeof AppTeacherTopicsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,7 +174,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/profile'
     | '/topics/$slug'
+    | '/teacher/'
     | '/topics/'
+    | '/teacher/topics/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -171,7 +191,9 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/profile'
     | '/topics/$slug'
+    | '/teacher'
     | '/topics'
+    | '/teacher/topics/$id'
   id:
     | '__root__'
     | '/'
@@ -187,7 +209,9 @@ export interface FileRouteTypes {
     | '/_app/dashboard'
     | '/_app/profile'
     | '/_app/topics/$slug'
+    | '/_app/teacher/'
     | '/_app/topics/'
+    | '/_app/teacher/topics/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -296,11 +320,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTopicsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/teacher/': {
+      id: '/_app/teacher/'
+      path: '/teacher'
+      fullPath: '/teacher/'
+      preLoaderRoute: typeof AppTeacherIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/topics/$slug': {
       id: '/_app/topics/$slug'
       path: '/topics/$slug'
       fullPath: '/topics/$slug'
       preLoaderRoute: typeof AppTopicsSlugRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/teacher/topics/$id': {
+      id: '/_app/teacher/topics/$id'
+      path: '/teacher/topics/$id'
+      fullPath: '/teacher/topics/$id'
+      preLoaderRoute: typeof AppTeacherTopicsIdRouteImport
       parentRoute: typeof AppRoute
     }
   }
@@ -310,14 +348,18 @@ interface AppRouteChildren {
   AppDashboardRoute: typeof AppDashboardRoute
   AppProfileRoute: typeof AppProfileRoute
   AppTopicsSlugRoute: typeof AppTopicsSlugRoute
+  AppTeacherIndexRoute: typeof AppTeacherIndexRoute
   AppTopicsIndexRoute: typeof AppTopicsIndexRoute
+  AppTeacherTopicsIdRoute: typeof AppTeacherTopicsIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppDashboardRoute: AppDashboardRoute,
   AppProfileRoute: AppProfileRoute,
   AppTopicsSlugRoute: AppTopicsSlugRoute,
+  AppTeacherIndexRoute: AppTeacherIndexRoute,
   AppTopicsIndexRoute: AppTopicsIndexRoute,
+  AppTeacherTopicsIdRoute: AppTeacherTopicsIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -337,3 +379,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
